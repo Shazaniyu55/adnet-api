@@ -11,6 +11,8 @@ const
     signUp, 
     message,
     firebaseLogin,
+    expense,
+    salesRecord
  
     
 } = require("../controller/usercontroller");
@@ -28,6 +30,8 @@ router.post("/register",signUp);
 router.post("/login", logIn);
 router.post("/message", message);
 router.post('/firebase-login', firebaseLogin)
+router.post('/create-expense', expense)
+router.post('/create-sales', salesRecord)
 
 
 

@@ -1,10 +1,13 @@
-const User = require("../model/user");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
 const jwt = require('jsonwebtoken');
-
+const User = require('../model/user');
+const cloudinary = require('../cloudinary');
+const streamifier = require('streamifier');
+const Expense= require("../model/expenses")
+const Sales= require("../model/sales")
 
 
 
@@ -99,9 +102,9 @@ const resetPassword = async (req, res) => {
 
 const signUp = async (req, res) => {
     try {
-      const { fullname, phoneNumber, email,country,  password, plan } = req.body;
+      const { firstName, portfolioUrl, lastName, bio,email,  phone,password,streetAddress,city,state,country,zipCode,plan } = req.body;
   //console.log(fullname, phoneNumber)
-      if (!fullname || !phoneNumber || !country  || !email || !password || !plan) {
+      if (!firstName || !lastName || !bio || !portfolioUrl || !streetAddress || !city || !state || !zipCode || !phone || !country  || !email || !password || !plan) {
         return res.status(400).json({ status: "Failed", message: "Please fill out all fields." });
         
       }
@@ -123,15 +126,23 @@ const signUp = async (req, res) => {
       };
       const selectedPlan = planDetails[plan];
 
-      async function createuser(){
+   
+
 
          // Create a new user with the provided data and the image URL if available
       const user = new User({
-        fullname,
-        phoneNumber,
-        country,
+        firstName,
+        lastName,
+        bio,
+        portfolioUrl,
         email,
+        phone,
         password,
+        streetAddress,
+        city,
+        state,
+        country,
+        zipCode,
         subscription: {
             plan,
             startDate: new Date(),
@@ -142,7 +153,6 @@ const signUp = async (req, res) => {
         
       });
 
-    
 
 
     
@@ -154,6 +164,7 @@ const signUp = async (req, res) => {
            
             // Generate a JWT token
             const token = jwt.sign({ id: user._id}, 'Adain', { expiresIn: '1h' });
+            verifyEmail(email)
 
            
             res.status(200).json({
@@ -167,11 +178,11 @@ const signUp = async (req, res) => {
             console.error('Error saving user:', error);
                 res.status(500).send('Error saving user');
         }
-      }
+      
   
      
   
-      createuser()
+     
   
      
     } catch (error) {
@@ -361,10 +372,114 @@ const firebaseLogin = async (req, res)=>{
 }
 
 
-const teamcollaborate = async(user)=>{}
+
+const verifyEmail = async(email) =>{
+
+    try {
+        
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ status: "Failed", message: "Email does not exist in our records." });
+        }
+
+
+        // Set up email transporter
+        const transporter = nodemailer.createTransport({
+            service: process.env.SERVICE,
+            auth: {
+                user: process.env.EMAIL,
+                pass: process.env.EMAIL_PASS,
+            },
+            tls: {
+                rejectUnauthorized: false
+            }
+        });
+
+        // Send password reset email
+        //const resetUrl = `http://localhost:3500/reset-password`;
+        const resetUrl = `http://localhost:3000/dashboard`;
+        await transporter.sendMail({
+            from: 'ADNET@gmail.com',
+            to: `${email}`,
+            subject: 'Verify Email',
+            html: `<p>Click The click to view Dashboard</p>
+                   <a href="${resetUrl}">Reset Password</a>
+                   <p>If you did not request this, please ignore this email.</p>`
+        });
+        console.log("message sent")
+
+        // res.status(200).json({ status: "Success", message: "Password reset email sent successfully Check Your Mail." });
+
+
+    } catch (error) {
+        console.error("Error sending password reset email:", error);
+        res.status(500).json({ status: "Failed", message: error.message });
+    }
+}
+
+const expense = async(req, res)=>{
+
+        try {
+            
+            const {id, items, quantity, description, amount, total}  = req.body;
+
+            if (!id|| !items|| !quantity || !description || !amount) {
+                res.status(400).json({status:"failed", message:"all fields are required"})
+            }
+
+            const userid = User.findById({id: id})
+            console.log(userid)
+            if(userid){
+                res.status(400).json({status: "failed", message: "invalid user"})
+            }
+
+
+            const expense = new Expense({
+                user: id,
+                items,
+                quantity,
+                description,
+                amount,
+                total
+            })
+                expense.save()
+
+               res.status(200).json({status:"success", message:"expense record created successfully"})
+
+        } catch (error) {
+          res.status(500).json({status: "failed" ,message:"an error occured please try again"})  
+          console.log(error)
+        }
+}
 
 
 
+const salesRecord = async(req, res)=>{
+
+    try {
+        
+        const {id, items, quantity, description, amount}  = req.body;
+
+        if (!id|| !items|| !quantity || !description || !amount) {
+res.status(400).json({status:"failed", message:"all fields are required"})
+        }
+
+        const sales = new Sales({
+            user: id,
+            items,
+            quantity,
+            description,
+            amount
+        })
+        sales.save()
+
+           res.status(200).json({status:"success", message:"sales record created successfully"})
+
+    } catch (error) {
+      res.status(500).json({status: "failed" ,message:"an error occured please try again"})  
+      console.log(error)
+    }
+}
 
 const logIn = async(req, res)=> 
     {
@@ -416,6 +531,7 @@ module.exports =
     resetPassword, 
     renderResetPasswordPage,
     firebaseLogin,
-    
+    expense,
+    salesRecord
 
 };

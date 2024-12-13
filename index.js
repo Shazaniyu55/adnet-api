@@ -17,12 +17,12 @@ const options = {
     definition:{
         openapi: '3.0.0',
         info: {
-            title:" mail-crm",
+            title:" ADNET",
             version:"1.0.0"
         },
         servers:[
             {
-                url:'https://mail-crm.vercel.app/'
+                url:'http://localhost:4200/'
             }
         ]
     },
@@ -74,18 +74,39 @@ app.use("/api/payment", paymentRoute);
  *                  schema:
  *                      type: object
  *                      properties:
- *                          fullname:
+ *                          firstName:
  *                              type: string
  *                              example: John Doe
- *                          phoneNumber:
+ *                          lastName:
+ *                               type: string
+ *                               example: musa aliyu
+ *                          bio:
+ *                              type: string
+ *                              example: i love coding
+ *                          streetAddress:
+ *                               type: string
+ *                               example: efe omo street
+ *                          state:
+ *                              type: string
+ *                              example: FCT
+ *                          phone:
  *                              type: string
  *                              example: 09074235666
+ *                          city:
+ *                              type: string
+ *                              example: Abuja
+ *                          zipCode:
+ *                              type: string
+ *                              exaple: 213045
  *                          email:
  *                              type: string
- *                              example: shazaniyu@example.com
+ *                              example: shazaniyu@gmail.com
  *                          country:
  *                              type: string
  *                              example: Nigeria
+ *                          portfolioUrl:
+ *                              type: string
+ *                              example: https://sanzy-portfolio.com
  *                          plan:
  *                             type: string
  *                             example: Premium
@@ -115,10 +136,10 @@ app.use("/api/payment", paymentRoute);
  *                      properties:
  *                          email:
  *                              type: string
- *                              example: john.doe@example.com
+ *                              example: shazaniyu@gmail.com
  *                          password:
  *                              type: string
- *                              example: Password123
+ *                              example: shazaniyu2@
  *      responses:
  *          200:
  *              description: Login successful
@@ -128,10 +149,10 @@ app.use("/api/payment", paymentRoute);
 
 /**
  * @swagger
- * /api/auth/:
- *  delete:
- *      summary: Deletes a user
- *      description: Deletes a user from the system.
+ * /api/payment/verify-payment:
+ *  get:
+ *      summary: Api link verify  a users payment
+ *      description: Api to verify a user payment.
  *      parameters:
  *          - in: query
  *            name: userId
@@ -168,6 +189,84 @@ app.use("/api/payment", paymentRoute);
  *                          body:
  *                              type: string
  *                              example: This is a test email.
+ *      responses:
+ *          200:
+ *              description: Message sent successfully
+ *          400:
+ *              description: Internal server error
+
+ */
+
+
+
+
+/**
+ * @swagger
+ * /api/auth/create-expense:
+ *  post:
+ *      summary: create an expense record
+ *      description: Api to create expense record.
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          id:
+ *                              type: string
+ *                              example: "64fd02d7e124ec1234567890"
+ *                          items:
+ *                              type: string
+ *                              example: fuel
+ *                          quantity:
+ *                              type: number
+ *                              example: 1
+ *                          description:
+ *                              type: string
+ *                              example: money to buy fuel
+ *                          amount:
+ *                              type: number
+ *                              example: 2000
+ *                          total:
+ *                              type: number
+ *                              example: 2000
+ *      responses:
+ *          200:
+ *              description: Message sent successfully
+ *          500:
+ *              description: Internal server error
+ */
+
+
+/**
+ * @swagger
+ * /api/auth/create-sales:
+ *  post:
+ *      summary: create an sales record
+ *      description: Api to create sales record.
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          id:
+ *                              type: string
+ *                              example: "64fd02d7e124ec1234567890"
+ *                          items:
+ *                              type: string
+ *                              example: fuel
+ *                          quantity:
+ *                              type: number
+ *                              example: 1
+ *                          description:
+ *                              type: string
+ *                              example: money to buy fuel
+ *                          amount:
+ *                              type: number
+ *                              example: 2000
  *      responses:
  *          200:
  *              description: Message sent successfully
@@ -209,6 +308,8 @@ app.use("/api/payment", paymentRoute);
  *          400:
  *              description: Bad Request
  */
+
+
 
 
 app.get('/', (req, res)=>{

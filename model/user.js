@@ -3,41 +3,65 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
-    fullname: {
+    firstName: { type: String,
+         required: true
+     },
+        lastName: { type: String,
+         required: true 
+        },
+     bio: { type: String
+
+      },
+     profileImageUrl: { 
         type: String,
-        required: true
-    },
-    phoneNumber: {
-        type: Number,
-        required: true,
-    },
-    isAdmin: {
-        type: Boolean,
-        default: false
-    },
-    country: {
-        type: String,
-        required: true
-    },
-     
-    
-    email: {
+        default: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+
+      },
+     portfolioUrl: { type: String
+
+      },
+      email: {
         type: String,
         required: true,
         unique: true,
         lowercase: true,
         trim: true,
-
     },
-    
+     phone: { type: String,
+         required: true
+         },
+     altPhone: { type: String
+
+      },
+     password: { type: String,
+         required: true
+         },
+     streetAddress: { type: String
+        , required: true
+     },
+     city: { type: String,
+         required: true
+         },
+     state: { type: String,
+         required: true
+         },
+     country: { type: String,
+         required: true
+         },
+     zipCode: { type: String,
+         required: true
+         },
+ 
+    isAdmin: {
+        type: Boolean,
+        default: false
+    },
+   
     notificationsCount: {
         type: Number,
         default: 0
     },
-    password: {
-        type: String,
-        required: true
-    },
+   
     resetToken: {
         type: String,
         default: null
@@ -60,10 +84,7 @@ const userSchema = new mongoose.Schema({
           type: Date,
           required: false,
         },
-        remainingEmails: {
-          type: Number,
-          required: false,
-        },
+       
         status: {
           type: String,
           enum: ['active', 'inactive', 'canceled', 'expired'],
@@ -74,11 +95,8 @@ const userSchema = new mongoose.Schema({
     firebaseUID:{
         type: String,
        default: null
-    }
-
+    } 
    
-   
-
 }, {
     timestamps: true
 });
