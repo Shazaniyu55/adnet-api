@@ -1,4 +1,4 @@
-Mail CRM
+ADNET API
 
 
 
@@ -42,4 +42,4 @@ License This project is licensed under the MIT License - see the LICENSE file fo
 
 Contact For any questions or support, please contact:
 
-Author: Shazaniyu Gbadamosi 
+Author: Shazaniyu Gbadamosi, Rachael Omiachi
