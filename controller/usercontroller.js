@@ -8,7 +8,7 @@ const cloudinary = require('../cloudinary');
 const streamifier = require('streamifier');
 const Expense= require("../model/expenses")
 const Sales= require("../model/sales")
-
+// const { startOfDay, endOfDay, startOfWeek, endOfWeek, startOfYear, endOfYear } = require('date-fns');
 
 
 //function to request a password rest
@@ -463,17 +463,25 @@ const salesRecord = async(req, res)=>{
         if (!id|| !items|| !quantity || !description || !amount) {
 res.status(400).json({status:"failed", message:"all fields are required"})
         }
+        const user = await User.findById(id)
 
-        const sales = new Sales({
-            user: id,
-            items,
-            quantity,
-            description,
-            amount
-        })
-        sales.save()
+        if(!user){
+            res.status(400).json({status:"failed", message:"userid does not match"})
+        }else{
+            const sales = new Sales({
+                user: id,
+                items,
+                quantity,
+                description,
+                amount
+            })
+            sales.save()
+            res.status(200).json({status:"success", message:"sales record created successfully"})
 
-           res.status(200).json({status:"success", message:"sales record created successfully"})
+        }
+
+       
+
 
     } catch (error) {
       res.status(500).json({status: "failed" ,message:"an error occured please try again"})  
@@ -519,6 +527,60 @@ const logIn = async(req, res)=>
     
 };
 
+const searchReport = async (req, res) => {
+    const { userId, day } = req.query; // Get the date from query
+    const query = {};
+
+    try {
+        if (!userId) {
+            return res.status(400).json({ message: "User ID is required" });
+        }
+
+        query.user = userId;
+
+        if (day) {
+            // Ensure the day is in correct format without any spaces
+            const formattedDay = day.trim(); // Remove any extra spaces
+
+            // Convert the provided day string (e.g., '2024-12-18') to a Date object
+            const date = new Date(formattedDay); // Convert to Date object
+            
+            // Check the result of date conversion
+            console.log('Converted Date:', date);
+
+            // Create start and end of the day in UTC
+            const startOfDay = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0)); // 00:00:00 UTC
+            const endOfDay = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999)); // 23:59:59.999 UTC
+
+            // Log the start and end of the day for debugging
+            console.log('Start of Day (UTC):', startOfDay);
+            console.log('End of Day (UTC):', endOfDay);
+
+            // Add to query to filter createdAt within the day
+            query.createdAt = { $gte: startOfDay, $lte: endOfDay };
+        }
+
+        // Query MongoDB for matching records
+        const records = await Sales.find(query);
+
+        // Log the query to check what is being executed
+        console.log('Query:', query);
+
+        if (records.length === 0) {
+            return res.status(404).json({ message: "No records found for the given day." });
+        }
+
+        res.status(200).json({ status: "success", message: records });
+
+    } catch (error) {
+        console.error('Error during search:', error);
+        res.status(500).json({ message: "Server error", error });
+    }
+};
+
+
+
+
 
 module.exports =
 {
@@ -532,6 +594,7 @@ module.exports =
     renderResetPasswordPage,
     firebaseLogin,
     expense,
-    salesRecord
+    salesRecord,
+    searchReport
 
 };

@@ -6,6 +6,9 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const authRoute = require("./routes/userroutes");
 const paymentRoute = require("./routes/payment");
+const companyRoute = require("./routes/company");
+const businessRoute = require("./routes/business");
+
 const path = require('path');
 const port  = 4200;
 const swaggerjsdocs = require('swagger-jsdoc');
@@ -60,6 +63,10 @@ customCssUrl: CSS_URL,
 }));
 app.use("/api/auth", authRoute);
 app.use("/api/payment", paymentRoute);
+app.use("/api/company", companyRoute);
+app.use("/api/business", businessRoute);
+
+
 
 /**
  * @swagger
@@ -254,7 +261,7 @@ app.use("/api/payment", paymentRoute);
  *                      properties:
  *                          id:
  *                              type: string
- *                              example: "64fd02d7e124ec1234567890"
+ *                              example: "67629dfd7358eb08f21a5238"
  *                          items:
  *                              type: string
  *                              example: fuel
@@ -272,6 +279,62 @@ app.use("/api/payment", paymentRoute);
  *              description: Message sent successfully
  *          500:
  *              description: Internal server error
+ */
+
+
+
+
+
+
+
+/**
+ * @swagger
+ * /api/company/create-company:
+ *  post:
+ *      summary: This API is used to make a new payment
+ *      description: The API collects JSON data from the frontend to register a new user.
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          id:
+ *                              type: string
+ *                              example: 67484330b8a5265d16fbad75
+ *                          companyName:
+ *                              type: string
+ *                              example: shazaniyuJTD
+ *                          businessStructure:
+ *                              type: string
+ *                              example: premium
+ *                          address:
+ *                              type: string
+ *                              example: john
+ *                          cacNumber:
+ *                              type: string
+ *                              example: 4464635464746
+ *                          incorporationDate:
+ *                              type: string
+ *                              example: 12/12/12
+ *                          taxId:
+ *                              type: string
+ *                              example: 4567876
+ *                          shareholderAgreement:
+ *                              type: string
+ *                              example: stonewss
+ *                          email:
+ *                              type: string
+ *                              example: werew@gmail.com
+ *                          phone:
+ *                              type: number
+ *                              example: 98098765
+ *      responses:
+ *          200:
+ *              description: Success
+ *          400:
+ *              description: Bad Request
  */
 
 
@@ -307,10 +370,38 @@ app.use("/api/payment", paymentRoute);
  *              description: Success
  *          400:
  *              description: Bad Request
+ * 
  */
 
 
-
+/**
+ * @swagger
+ * /api/auth/search-report:
+ *  get:
+ *      summary: Search sales records
+ *      description: This API is used to search for sales records (daily, weekly, monthly, or annually).
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          userId:
+ *                              type: string
+ *                              example: 67629dfd7358eb08f21a5238
+ *                          criteria:
+ *                              type: string
+ *                              enum: [daily, weekly, monthly, annually]
+ *                              description: The criteria for searching records.
+ *      responses:
+ *          200:
+ *              description: Successfully fetched records.
+ *          400:
+ *              description: Bad Request. Invalid input.
+ *          500:
+ *              description: Internal Server Error.
+ */
 
 app.get('/', (req, res)=>{
     res.send('4welcome to mail-crm server')
