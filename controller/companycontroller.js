@@ -1,6 +1,5 @@
 const Company = require('../model/company');
-// const cloudinary = require('../config/cloudinaryConfig');
-// const uploadToCloudinary = require('../config/multerConfig').uploadToCloudinary; // Ensure this is correctly imported
+const cloudinary = require('../cloudinary');
 const streamifier = require('streamifier');
 
 const createCompany = async (req, res) => {
@@ -45,24 +44,40 @@ const createCompany = async (req, res) => {
       });
     }
 
-    // Upload company documents to Cloudinary
-    const uploadedFiles = {};
-    const fileFields = [
-      'additionalCacDocs',
-      'moa',
-      'foc',
-      'shareholderAgreement',
-      'additionalDocs',
-      'verificationDocs'
-    ];
 
-    for (const field of fileFields) {
-      if (req.files && req.files[field]) {
-        const file = req.files[field][0]; // Multer stores the file in an array
-        const uploadedFile = await uploadToCloudinary(file.buffer, 'company_docs');
-        uploadedFiles[field] = uploadedFile.secure_url;
-      }
-    }
+    let moaUrl = "";
+    let additionalCacDocsUrl = "";
+    let additionalDocsUrl = "";
+    let focUrl = "";
+
+
+      // Function to handle the file uploads to Cloudinary
+        const uploadFile = async (file) => {
+          return new Promise((resolve, reject) => {
+            if (!file) return resolve("");
+            const uploaderStream = cloudinary.uploader.upload_stream(
+              { resource_type: 'auto' },
+              (err, result) => {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(result.secure_url);
+                }
+              }
+            );
+            streamifier.createReadStream(file.buffer).pipe(uploaderStream);
+          });
+        };
+    
+        // Upload documents if they exist
+        if (req.files) {
+          if (req.files.moa) moaUrl = await uploadFile(req.files.moa);
+          if (req.files.additionalCacDocs) additionalCacDocsUrl = await uploadFile(req.files.additionalCacDocs);
+          if (req.files.additionalDocs) additionalDocsUrl = await uploadFile(req.files.additionalDocs);
+          if (req.files.foc) focUrl = await uploadFile(req.files.foc);
+        }
+    
+
 
     // Save company data in the database
     const newCompany = new Company({
@@ -76,8 +91,7 @@ const createCompany = async (req, res) => {
       shareholderAgreement,
       email,
       phone,
-    //   user: req.userId, // Ensure `userId` is correctly passed from middleware or session
-      ...uploadedFiles,
+
     });
 
     await newCompany.save();

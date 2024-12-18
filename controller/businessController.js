@@ -61,6 +61,7 @@ const registerBusiness = async (req, res) => {
 
     // Create new business entry in the database
     const newBusiness = new BusinessRegistration({
+      bussOwner: userId,
       businessName,
       businessAddress,
       contactEmail,
