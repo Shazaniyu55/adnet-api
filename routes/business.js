@@ -16,6 +16,6 @@ const upload = multer({ storage }).fields([
 
 
 
-router.post('/business', upload,  registerBusiness);
+router.post('/create-business', upload,  registerBusiness);
 
 module.exports = router;

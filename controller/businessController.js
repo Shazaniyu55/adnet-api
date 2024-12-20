@@ -65,6 +65,7 @@ const registerBusiness = async (req, res) => {
       businessName,
       businessAddress,
       contactEmail,
+      businessType,
       moa: moaUrl,
       additionalCacDocs: additionalCacDocsUrl,
       additionalDocs: additionalDocsUrl,

@@ -12,7 +12,7 @@ const upload = multer({ storage }).fields([
     { name: 'foc', maxCount: 1 }
   ]);
   
-router.post('create-company', upload, createCompany)
+router.post('/create-company', upload, createCompany)
 
 
 

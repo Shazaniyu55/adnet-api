@@ -291,8 +291,8 @@ app.use("/api/business", businessRoute);
  * @swagger
  * /api/company/create-company:
  *  post:
- *      summary: This API is used to make a new payment
- *      description: The API collects JSON data from the frontend to register a new user.
+ *      summary: This API is used to create a logged in user's company details
+ *      description: The API collects JSON data from the frontend to save  a new user's company data.
  *      requestBody:
  *          required: true
  *          content:
@@ -330,6 +330,42 @@ app.use("/api/business", businessRoute);
  *                          phone:
  *                              type: number
  *                              example: 98098765
+ *      responses:
+ *          200:
+ *              description: Success
+ *          400:
+ *              description: Bad Request
+ */
+
+
+/**
+ * @swagger
+ * /api/business/create-business:
+ *  post:
+ *      summary: This API is used to create a logged in user's company details
+ *      description: The API collects JSON data from the frontend to save  a new user's company data.
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          userId:
+ *                              type: string
+ *                              example: 67484330b8a5265d16fbad75
+ *                          businessName:
+ *                              type: string
+ *                              example: shazaniyuJTD
+ *                          businessAddress:
+ *                              type: string
+ *                              example: john
+ *                          businessType:
+ *                              type: string
+ *                              example: sole proprietorship
+ *                          contactEmail:
+ *                              type: string
+ *                              example: werew@gmail.com
  *      responses:
  *          200:
  *              description: Success
