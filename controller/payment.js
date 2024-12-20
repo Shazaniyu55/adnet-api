@@ -6,7 +6,7 @@ require("dotenv").config();
 
 
 
-const subscriptionFee = async (req, res) => {
+const subscriptionFee = async (req, res) => {``
   const { email, name, package, userId } = req.body;
 
   const paymentData = {
@@ -25,12 +25,12 @@ const subscriptionFee = async (req, res) => {
     const response = await axios.post('https://api.paystack.co/transaction/initialize', {
       amount: package * 100,
       currency: 'NGN',
-      callback_url: `http://localhost:3500/api/payment/verify-payment?userId=${userId}`,
+      callback_url: `http://localhost:4200/api/payment/verify-payment?userId=${userId}`,
       email: email,
       name: name,
     }, {
       headers: {
-        Authorization: `Bearer ${process.env.PAYSTACK_SECRETE_LIVE}`,
+        Authorization: `Bearer ${process.env.PAYSTACK_SECRETE}`,
         'Content-Type': 'application/json'
       }
     });
@@ -41,12 +41,12 @@ const subscriptionFee = async (req, res) => {
 
       // Update paymentData to include the tx_ref from Paystack
       paymentData.tx_ref = tx_ref;
-
+        console.log(paymentLink)
       // Save the payment data to your database
-      const payment = new Subscribe(paymentData);
-      await payment.save();
+      // const payment = new Subscribe(paymentData);
+      // await payment.save();
       
-      res.redirect(paymentLink); // Redirect user to the payment page
+      res.status(200).json({status: "success", message: paymentLink}); // Redirect user to the payment page
     } else {
       res.status(400).json({ success: false, message: 'Payment initialization failed' });
     }

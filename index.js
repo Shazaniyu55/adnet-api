@@ -50,7 +50,7 @@ app.use(session({
 app.use(bodyParser.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cors({
-    origin: "http://localhost:3000",          // Removed the trailing slash
+    origin: "http://localhost:4200/",          // Removed the trailing slash
     methods: 'GET, POST, PUT, DELETE',       // Methods allowed
     allowedHeaders: 'Content-Type, Authorization' // Corrected 'authorization' to 'Authorization'
   }));
@@ -396,8 +396,8 @@ app.use("/api/business", businessRoute);
  *                              type: string
  *                              example: shazaniyu@gmail.com
  *                          package:
- *                              type: string
- *                              example: premium
+ *                              type: number
+ *                              example: 100
  *                          name:
  *                              type: string
  *                              example: john

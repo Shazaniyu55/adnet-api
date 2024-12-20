@@ -536,15 +536,14 @@ const searchReport = async (req, res) => {
             return res.status(400).json({ message: "User ID is required" });
         }
 
-        query.user = userId;
+        query.createdAt = day;
 
         if (day) {
             // Ensure the day is in correct format without any spaces
             const formattedDay = day.trim(); // Remove any extra spaces
 
             // Convert the provided day string (e.g., '2024-12-18') to a Date object
-            const date = new Date(formattedDay); // Convert to Date object
-            
+            const date = new Date(`${formattedDay}T00:00:00`);            
             // Check the result of date conversion
             console.log('Converted Date:', date);
 
@@ -562,6 +561,7 @@ const searchReport = async (req, res) => {
 
         // Query MongoDB for matching records
         const records = await Sales.find(query);
+        console.log(records)
 
         // Log the query to check what is being executed
         console.log('Query:', query);
