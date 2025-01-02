@@ -50,7 +50,7 @@ app.use(session({
 app.use(bodyParser.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cors({
-    origin: "http://localhost:4200",          // Removed the trailing slash
+    origin: "https://adnet-api.vercel.app",          // Removed the trailing slash
     methods: 'GET, POST, PUT, DELETE',       // Methods allowed
     allowedHeaders: 'Content-Type, Authorization' // Corrected 'authorization' to 'Authorization'
   }));
